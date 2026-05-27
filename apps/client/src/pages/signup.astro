@@ -6,13 +6,12 @@ import PrivateRoute from '../layout/PrivateRoute.astro';
 ---
 
 <PageLayout title="Registro">
-  <PrivateRoute>
   <div class="flex items-center justify-center min-h-screen py-10">
     <form
       id="signup-form"
       class="p-8 rounded-lg border border-gray-300 dark:border-gray-600 w-full max-w-sm flex flex-col gap-6 bg-white dark:bg-gray-800"
     >
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center">Crear Cuenta de Empleado</h2>
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 text-center">Crear Cuenta </h2>
 
       <div class="relative flex flex-col gap-1">
         <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300">Nombre Completo</label>
@@ -41,20 +40,6 @@ import PrivateRoute from '../layout/PrivateRoute.astro';
       </div>
 
       <div class="relative flex flex-col gap-1">
-        <label for="department" class="text-sm font-medium text-gray-700 dark:text-gray-300">Departamento</label>
-        <select
-          id="department"
-          class="w-full border border-gray-300 dark:border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-white transition-colors"
-        >
-          <option value="">Selecciona uno...</option>
-          <option value="Ventas">Ventas</option>
-          <option value="IT / Sistemas">IT / Sistemas</option>
-          <option value="Recursos Humanos">Recursos Humanos</option>
-          <option value="Administración">Administración</option>
-        </select>
-      </div>
-
-      <div class="relative flex flex-col gap-1">
         <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
         <div class="relative">
           <input
@@ -75,12 +60,11 @@ import PrivateRoute from '../layout/PrivateRoute.astro';
         type="submit"
         class="flex justify-center items-center gap-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md transition-colors cursor-pointer"
       >
-        Registrar Empleado
+        Registrar
         <Spinner color="fill-blue-800" />
       </button>
     </form>
   </div>
-  </PrivateRoute>
 </PageLayout>
 
 <script>
@@ -96,14 +80,12 @@ import PrivateRoute from '../layout/PrivateRoute.astro';
     password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\S]{8,}$/, {
       message: 'La contraseña no cumple los requisitos',
     }),
-    department: z.string().min(2, { message: 'Selecciona un departamento' }),
   });
 
   // Elementos del DOM
   const form = document.querySelector('#signup-form');
   const nameInput = document.querySelector('#name');
   const emailInput = document.querySelector('#email');
-  const departmentInput = document.querySelector('#department');
   const passwordInput = document.querySelector('#password');
   const spinner = document.querySelector('#spinner');
 
@@ -150,7 +132,6 @@ import PrivateRoute from '../layout/PrivateRoute.astro';
     name: nameInput.value,
     email: emailInput.value,
     password: passwordInput.value,
-    department: departmentInput.value,
   };
 
   // 1. Validar con el Schema (Asegúrate de actualizar formUserSchema)

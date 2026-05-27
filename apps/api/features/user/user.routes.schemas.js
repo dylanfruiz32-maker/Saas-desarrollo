@@ -9,7 +9,6 @@ export const createUserRouteSchema = {
     password: z.string().regex(PASSWORD_REGEX, {
       message: 'Recuerda cumplir los requerimientos de la contraseña',
     }),
-    department: z.string().min(2, { message: 'El nombre del departamento es demasiado corto' }),
   }),
   params: null,
   query: null,

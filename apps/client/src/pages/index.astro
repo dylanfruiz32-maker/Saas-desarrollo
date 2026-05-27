@@ -157,7 +157,7 @@ const metricas = {
                   // Llamas a tu función que ya tienes en utils.js
                   const colorClase = stockColor(prod.stock, prod.minimo);
                   return (
-                    <tr data-id={prod.id} class="product-row transition-colors hover:bg-gray-50/50">
+                    <tr data-id={prod.id} class="product-row transition-colors hover:bg-gray-50/10">
                       <td class="p-4">
                         <div class="font-medium text-gray-900 dark:text-white">{prod.nombre}</div>
                         <div class="text-xs text-gray-500">{prod.categoria}</div>
@@ -170,7 +170,7 @@ const metricas = {
                       </td>
                       <td class="p-4 text-gray-500">Mín: {prod.minimo}</td>
                       <td class="p-4 flex items-center gap-2">
-                        <input type="number" class="input-cantidad w-16 rounded border p-1 text-center [appearance:textfield]" value="1" min="1" />
+                        <input type="text" class="input-cantidad w-16 rounded border p-1 text-center [appearance:textfield]" value="1" min="1" />
                         <button class="btn-restock rounded bg-blue-600 px-3 py-1.5 text-xs font-bold text-white">Surtir</button>
                       </td>
                     </tr>

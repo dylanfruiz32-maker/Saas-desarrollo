@@ -16,12 +16,11 @@ userRouter.post('/', async (req, res, next) => {
     // 2. Encriptar la contraseña
     const passwordHash = await bcrypt.hash(body.password, 10);
 
-    // 3. Guardar en la base de datos con los 4 campos
+    // 3. Guardar en la base de datos con los 3 campos
     createdUser = await userRepository.createUser({ 
       name: body.name, 
       email: body.email, 
       passwordHash, 
-      department: body.department 
     });
 
     // 4. Enviar el correo de validación
@@ -37,7 +36,7 @@ userRouter.post('/', async (req, res, next) => {
       html: `
         <div style="font-family: sans-serif;">
           <h1>¡Bienvenido, ${createdUser.name}!</h1>
-          <p>Te has registrado correctamente en el departamento de <b>${createdUser.department}</b>.</p>
+          <p>Te has registrado correctamente en la plataforma de Intranet.</p>
           <p>Para comenzar a usar la plataforma, por favor confirma tu correo haciendo clic abajo:</p>
           <a href="${CLIENT_ENDPOINT}/verify/${emailToken}" 
             style="background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">

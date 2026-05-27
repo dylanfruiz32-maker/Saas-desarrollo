@@ -11,7 +11,6 @@ const createUsersTable = async () => {
       name TEXT NOT NULL,
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
-      department TEXT NOT NULL,
       email_verified BOOLEAN DEFAULT false
     )
   `);

@@ -8,16 +8,15 @@ import db from '../../db/index.js';
  * @param {string} payload.name - Nombre completo del empleado
  * @param {string} payload.email - El correo del usuario
  * @param {string} payload.passwordHash - La contraseña encriptada
- * @param {string} payload.department - Departamento de la empresa
  * @returns {Promise<User>} El usuario creado
  */
-const createUser = async ({ name, email, passwordHash, department }) => {
+const createUser = async ({ name, email, passwordHash }) => {
   const res = await db.query(
     `
-    INSERT INTO users (name, email, password_hash, department)
-    VALUES ($1, $2, $3, $4) RETURNING *
+    INSERT INTO users (name, email, password_hash)
+    VALUES ($1, $2, $3) RETURNING *
   `, 
-    [name, email, passwordHash, department],
+    [name, email, passwordHash],
 );
   
   const createdUser = res.rows[0];

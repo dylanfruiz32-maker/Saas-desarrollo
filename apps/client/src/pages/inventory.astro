@@ -1,32 +1,26 @@
 ---
-// src/pages/inventory.astro
 import PageLayout from '../layout/PageLayout.astro';
 import PublicRoute from '../layout/PublicRoute.astro';
-import { menuItems } from '../components/navigation/utils.js'; // Importación correcta de tus rutas
+import { menuItems } from '../components/navigation/utils.js';
 
 const nombreTienda = 'Perfumería & Calzado Elegance';
 
-// Datos estáticos para la tabla visual
 const inventario = [
-    { id: 'PRD-001', nombre: 'Perfume Bleu de Chanel 100ml', categoria: 'Perfumes', precio: '120.00', stock: 15, estado: 'Óptimo' },
-    { id: 'PRD-002', nombre: 'Zapatos Oxford Cuero Negro (Talla 42)', categoria: 'Zapatos', precio: '85.00', stock: 4, estado: 'Bajo' },
-    { id: 'PRD-003', nombre: 'Crema Hidratante Facial', categoria: 'Cuidado Personal', precio: '25.00', stock: 0, estado: 'Agotado' },
-    { id: 'PRD-004', nombre: 'Tacones Aguja Rojo Pasión (Talla 38)', categoria: 'Zapatos', precio: '95.00', stock: 8, estado: 'Óptimo' },
-    { id: 'PRD-005', nombre: 'Perfume Versace Eros Flame', categoria: 'Perfumes', precio: '110.00', stock: 2, estado: 'Crítico' },
-    { id: 'PRD-006', nombre: 'Bolsa de Cuero Marrón', categoria: 'Accesorios', precio: '60.00', stock: 10, estado: 'Óptimo' },
-    { id: 'PRD-007', nombre: 'Gafas de Sol Ray-Ban', categoria: 'Accesorios', precio: '150.00', stock: 5, estado: 'Bajo' },
+    { id: 'PRD-001', nombre: 'Perfume Bleu de Chanel 100ml', categoria: 'Perfumes', precio: '120.00', precioCosto: '80.00', stock: 2, stockMinimo: 5 }, 
+    { id: 'PRD-002', nombre: 'Zapatos Oxford Cuero Negro (Talla 42)', categoria: 'Zapatos', precio: '85.00', precioCosto: '45.00', stock: 1, stockMinimo: 4 }, 
+    { id: 'PRD-003', nombre: 'Perfume Versace Eros Flame', categoria: 'Perfumes', precio: '110.00', precioCosto: '70.00', stock: 0, stockMinimo: 3 },    
+    { id: 'PRD-004', nombre: 'Tacones Aguja Rojo Pasión (Talla 38)', categoria: 'Zapatos', precio: '95.00', precioCosto: '50.00', stock: 3, stockMinimo: 6 },  
+    { id: 'PRD-005', nombre: 'Crema Hidratante Facial', categoria: 'Cuidado Personal', precio: '25.00', precioCosto: '15.00', stock: 12, stockMinimo: 3 },
+    { id: 'PRD-006', nombre: 'Bolsa de Cuero Marrón', categoria: 'Accesorios', precio: '60.00', precioCosto: '35.00', stock: 10, stockMinimo: 2 },
+    { id: 'PRD-007', nombre: 'Gafas de Sol Ray-Ban', categoria: 'Accesorios', precio: '150.00', precioCosto: '90.00', stock: 5, stockMinimo: 2 },
 ];
 ---
 
 <PageLayout title="Inventario">
 <PublicRoute>
-    <!-- CONTENEDOR GENERAL -->
-    <div class="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="flex h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden">
     
-    <!-- BARRA LATERAL (SIDEBAR) - IGUAL A TU INDEX -->
-    <aside
-        class="hidden w-64 flex-col justify-between border-r border-gray-200 bg-slate-900 p-6 text-white md:flex dark:border-gray-800"
-    >
+    <aside class="hidden w-64 shrink-0 flex-col justify-between border-r border-gray-200 bg-slate-900 p-6 text-white md:flex dark:border-gray-800">
         <div>
         <div class="mb-10 flex items-center gap-3">
             <span class="text-2xl">📦</span>
@@ -35,11 +29,7 @@ const inventario = [
         
         <nav id="sidebar-menu" class="flex flex-col gap-2">
             {menuItems.map((item) => (
-            <a 
-                href={item.href} 
-                data-link={item.href} 
-                class="px-4 py-3 text-sm font-medium transition-colors rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white"
-            >
+            <a href={item.href} data-link={item.href} class="px-4 py-3 text-sm font-medium transition-colors rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white">
                 {item.label}
             </a>
             ))}
@@ -57,10 +47,8 @@ const inventario = [
         </div>
     </aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="mx-auto w-full max-w-7xl flex-1 p-6 md:p-10">
+    <main class="w-full flex-1 p-6 md:p-10 overflow-y-auto">
         
-        <!-- ENCABEZADO -->
         <header class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
             <h1 class="text-2xl font-bold tracking-tight text-gray-900 md:text-3xl dark:text-white">
@@ -74,36 +62,61 @@ const inventario = [
             <button class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
             📥 Exportar
             </button>
-            <button class="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:w-auto">
+            <button id="btn-anadir" class="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 sm:w-auto">
             + Añadir Producto
             </button>
         </div>
         </header>
 
-        <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Valor Total Al Costo</p>
+                    <p id="kpi-valor-total" class="text-2xl font-bold text-gray-900 dark:text-white mt-2">$0.00</p>
+                </div>
+                <span class="text-xs text-emerald-500 font-medium mt-3">Capital invertido en almacén</span>
+            </div>
+
+            <div id="card-totales" title="Ver todos" class="cursor-pointer hover:border-blue-500 transition-colors bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Items Registrados</p>
+                    <p id="kpi-productos-totales" class="text-2xl font-bold text-gray-900 dark:text-white mt-2">0</p>
+                </div>
+                <span class="text-xs text-gray-400 mt-3">Click para ver todos</span>
+            </div>
+
+            <div id="card-restock" title="Filtrar por restock" class="cursor-pointer hover:border-amber-500 transition-colors bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Alertas de Restock</p>
+                    <p id="kpi-stock-bajo" class="text-2xl font-bold text-amber-500 mt-2">0</p>
+                </div>
+                <span class="text-xs text-amber-500/80 mt-3">Click para filtrar</span>
+            </div>
+
+            <div id="card-agotados" title="Filtrar agotados" class="cursor-pointer hover:border-red-500 transition-colors bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Productos Agotados</p>
+                    <p id="kpi-agotados" class="text-2xl font-bold text-red-500 mt-2">0</p>
+                </div>
+                <span class="text-xs text-red-500/80 mt-3">Click para filtrar</span>
+            </div>
+        </div>
+
         <div class="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="relative w-full max-w-md">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
             🔍
             </span>
-            <input 
-            type="text" 
-            placeholder="Buscar por nombre, ID o categoría..." 
-            class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-            />
+            <input id="buscar-input" type="text" placeholder="Buscar por nombre, ID o categoría..." class="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white" />
         </div>
         
         <div class="flex gap-3">
-            <select class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
-            <option>Todas las categorías</option>
-            <option>Perfumes</option>
-            <option>Zapatos</option>
-            <option>Cuidado Personal</option>
+            <select id="categoria-select" class="rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <option value="Todas las categorías">Todas las categorías</option>
             </select>
         </div>
         </div>
 
-        <!-- TABLA DE INVENTARIO -->
         <section class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-gray-700 dark:bg-gray-800">
         <div class="w-full overflow-x-auto">
             <table class="w-full border-collapse text-left text-sm">
@@ -112,52 +125,19 @@ const inventario = [
                 <th class="border-b border-gray-200 p-4 dark:border-gray-700">ID</th>
                 <th class="border-b border-gray-200 p-4 dark:border-gray-700">Producto</th>
                 <th class="border-b border-gray-200 p-4 dark:border-gray-700">Categoría</th>
-                <th class="border-b border-gray-200 p-4 dark:border-gray-700">Precio</th>
-                <th class="border-b border-gray-200 p-4 dark:border-gray-700">Stock</th>
-                <th class="border-b border-gray-200 p-4 dark:border-gray-700">Estado</th>
+                <th class="border-b border-gray-200 p-4 dark:border-gray-700">P. Venta</th>
+                <th class="border-b border-gray-200 p-4 dark:border-gray-700">P. Costo</th>
+                <th class="border-b border-gray-200 p-4 dark:border-gray-700">Stock / Estado</th>
                 <th class="border-b border-gray-200 p-4 dark:border-gray-700 text-right">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                {inventario.map((prod) => (
-                <tr class="transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
-                    <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-xs">{prod.id}</td>
-                    <td class="p-4 font-medium text-gray-900 dark:text-white">{prod.nombre}</td>
-                    <td class="p-4">
-                    <span class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                        {prod.categoria}
-                    </span>
-                    </td>
-                    <td class="p-4 text-gray-900 dark:text-white font-medium">${prod.precio}</td>
-                    <td class="p-4 font-semibold text-gray-700 dark:text-gray-300">{prod.stock} u.</td>
-                    <td class="p-4">
-                    <span class={`rounded-full px-2.5 py-1 text-xs font-medium 
-                        ${prod.estado === 'Óptimo' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : ''}
-                        ${prod.estado === 'Bajo' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : ''}
-                        ${prod.estado === 'Crítico' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400' : ''}
-                        ${prod.estado === 'Agotado' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : ''}
-                    `}>
-                        {prod.estado}
-                    </span>
-                    </td>
-                    <td class="p-4 text-right">
-                    <div class="flex justify-end gap-2">
-                        <button class="p-1.5 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400" title="Editar">
-                        ✏️
-                        </button>
-                        <button class="p-1.5 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400" title="Eliminar">
-                        🗑️
-                        </button>
-                    </div>
-                    </td>
-                </tr>
-                ))}
-            </tbody>
+            <tbody id="tabla-inventario" class="divide-y divide-gray-200 dark:divide-gray-700">
+                </tbody>
             </table>
         </div>
         <div class="border-t border-gray-200 bg-white px-4 py-3 flex items-center justify-between sm:px-6 dark:border-gray-700 dark:bg-gray-800">
             <div class="text-sm text-gray-700 dark:text-gray-400">
-            Mostrando <span class="font-medium">1</span> a <span class="font-medium">5</span> de <span class="font-medium">148</span> resultados
+            Mostrando <span id="contador-mostrados" class="font-medium">0</span> de <span id="contador-total" class="font-medium">0</span> resultados
             </div>
             <div class="flex gap-2">
             <button class="rounded-md border border-gray-300 bg-white px-3 py-1 text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400">Anterior</button>
@@ -165,21 +145,347 @@ const inventario = [
             </div>
         </div>
         </section>
-
     </main>
+    </div>
+
+    <div id="modal-producto" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm hidden">
+        <div class="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl dark:border-gray-700 dark:bg-gray-800">
+            <header class="mb-4 flex items-center justify-between">
+                <h3 id="modal-titulo" class="text-lg font-bold text-gray-900 dark:text-white">Añadir Producto</h3>
+                <button id="modal-cerrar-x" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">✕</button>
+            </header>
+            
+            <form id="form-producto" class="flex flex-col gap-4">
+                <input type="hidden" id="form-id" />
+                
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Nombre del Producto</label>
+                    <input type="text" id="form-nombre" required class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Categoría</label>
+                    <select id="form-categoria-select" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                    </select>
+                </div>
+
+                <div id="contenedor-nueva-categoria" class="hidden">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Nombre de la Nueva Categoría</label>
+                    <input type="text" id="form-nueva-categoria" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" placeholder="Ej. Deporte, Invierno" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">P. Venta ($)</label>
+                        <input type="number" id="form-precio" step="0.01" min="0" required class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">P. Costo ($)</label>
+                        <input type="number" id="form-precio-costo" step="0.01" min="0" required class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Stock Actual</label>
+                        <input type="number" id="form-stock" min="0" required class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1">Stock Mínimo</label>
+                        <input type="number" id="form-stock-minimo" min="0" required class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white" />
+                    </div>
+                </div>
+
+                <footer class="mt-4 flex justify-end gap-3 border-t border-gray-100 pt-4 dark:border-gray-700">
+                    <button type="button" id="modal-cancelar" class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+                        Guardar Cambios
+                    </button>
+                </footer>
+            </form>
+        </div>
     </div>
 </PublicRoute>
 </PageLayout>
 
-<!-- SCRIPT EXACTAMENTE IGUAL PARA QUE PINTE LA BARRA AZUL EN ESTA PÁGINA TAMBIÉN -->
-<script>
-const rutaActual = window.location.pathname;
-const enlacesMenu = document.querySelectorAll('#sidebar-menu a');
+<script is:inline define:vars={{ inventario }}>
+    let listaProductos = JSON.parse(localStorage.getItem('inventario_saas')) || inventario;
+    let kpiFiltroActivo = 'todos'; // Variable global para manejar los filtros de KPI
 
-enlacesMenu.forEach((enlace) => {
-    if (enlace.getAttribute('data-link') === rutaActual) {
-    enlace.classList.remove('rounded-lg', 'text-slate-400', 'hover:bg-slate-800');
-    enlace.classList.add('border-l-4', 'border-blue-500', 'bg-slate-800', 'text-white');
+    const tabla = document.querySelector('#tabla-inventario');
+    const buscarInput = document.querySelector('#buscar-input');
+    const categoriaSelect = document.querySelector('#categoria-select');
+
+    const modal = document.querySelector('#modal-producto');
+    const formProducto = document.querySelector('#form-producto');
+    const modalTitulo = document.querySelector('#modal-titulo');
+    const modalCerrarBtn = document.querySelector('#modal-cerrar-x');
+    const modalCancelarBtn = document.querySelector('#modal-cancelar');
+
+    const fId = document.querySelector('#form-id');
+    const fNombre = document.querySelector('#form-nombre');
+    const fCategoriaSelect = document.querySelector('#form-categoria-select');
+    const fNuevaCategoriaInput = document.querySelector('#form-nueva-categoria');
+    const fContenedorNuevaCat = document.querySelector('#contenedor-nueva-categoria');
+    const fPrecio = document.querySelector('#form-precio');
+    const fPrecioCosto = document.querySelector('#form-precio-costo');
+    const fStock = document.querySelector('#form-stock');
+    const fStockMinimo = document.querySelector('#form-stock-minimo');
+
+    const toggleModal = (show) => {
+        if (show) modal.classList.remove('hidden');
+        else {
+            modal.classList.add('hidden');
+            formProducto.reset();
+            fContenedorNuevaCat.classList.add('hidden');
+            fNuevaCategoriaInput.removeAttribute('required');
+        }
+    };
+
+    function actualizarSelectoresCategorias() {
+        const categoriasUnicas = [...new Set(listaProductos.map(p => p.categoria))];
+        const valorFiltroActual = categoriaSelect.value;
+        categoriaSelect.innerHTML = `<option value="Todas las categorías">Todas las categorías</option>` +
+            categoriasUnicas.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+        categoriaSelect.value = valorFiltroActual || "Todas las categorías";
+
+        fCategoriaSelect.innerHTML = categoriasUnicas.map(cat => `<option value="${cat}">${cat}</option>`).join('') +
+            `<option value="__NUEVA__" class="text-blue-600 font-semibold">+ Nueva categoría...</option>`;
     }
-    });
+
+    function renderizarInventario() {
+        localStorage.setItem('inventario_saas', JSON.stringify(listaProductos));
+        actualizarSelectoresCategorias();
+
+        const busqueda = buscarInput.value.toLowerCase().trim();
+        const filtroCat = categoriaSelect.value;
+
+        let valorTotalAlCosto = 0;
+        let conteoBajoStock = 0;
+        let conteoAgotados = 0;
+
+        // Filtrado general (Buscador, Dropdown y KPIs)
+        const productosFiltrados = listaProductos.filter(prod => {
+            const stockNum = Number(prod.stock) || 0;
+            const minNum = Number(prod.stockMinimo) || 0;
+            
+            const contenidoTexto = `${prod.id} ${prod.nombre} ${prod.categoria}`.toLowerCase();
+            const coincideBusqueda = contenidoTexto.includes(busqueda);
+            const coincideCategoria = filtroCat === 'Todas las categorías' || prod.categoria === filtroCat;
+            
+            let coincideKpi = true;
+            if (kpiFiltroActivo === 'restock') {
+                coincideKpi = stockNum > 0 && stockNum <= minNum;
+            } else if (kpiFiltroActivo === 'agotados') {
+                coincideKpi = stockNum === 0;
+            }
+
+            return coincideBusqueda && coincideCategoria && coincideKpi;
+        });
+
+        // Contadores para los KPIs (Se calculan sobre la lista completa siempre)
+        listaProductos.forEach(p => {
+            const stockNum = Number(p.stock) || 0;
+            const minNum = Number(p.stockMinimo) || 0;
+            valorTotalAlCosto += (Number(p.precioCosto) || 0) * stockNum;
+            
+            if (stockNum === 0) conteoAgotados++;
+            else if (stockNum <= minNum) conteoBajoStock++;
+        });
+
+        if (productosFiltrados.length === 0) {
+            tabla.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No se encontraron productos coincidentes.</td></tr>`;
+        } else {
+            tabla.innerHTML = productosFiltrados.map(prod => {
+                const stockNum = Number(prod.stock);
+                const minNum = Number(prod.stockMinimo) || 0;
+                
+                // NUEVA LÓGICA DE COLORES DE STOCK
+                let claseTextoStock = '';
+                let claseBarraStock = '';
+                let iconoAlerta = '';
+
+                if (stockNum >= 10) {
+                    claseTextoStock = 'text-emerald-500 font-bold';
+                    claseBarraStock = 'bg-slate-400'; // Barra gris
+                } else if (stockNum >= 5) {
+                    claseTextoStock = 'text-amber-500 font-bold';
+                    claseBarraStock = 'bg-amber-500';  // Barra naranja
+                } else {
+                    claseTextoStock = 'text-red-500 font-bold';
+                    claseBarraStock = 'bg-red-500';    // Barra roja
+                    iconoAlerta = '⚠️';
+                }
+
+                return `
+                    <tr class="fila-producto transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-700/30" data-categoria="${prod.categoria}">
+                        <td class="p-4 text-gray-500 dark:text-gray-400 font-mono text-xs">${prod.id}</td>
+                        <td class="p-4 font-medium text-gray-900 dark:text-white">${prod.nombre}</td>
+                        <td class="p-4">
+                            <span class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                ${prod.categoria}
+                            </span>
+                        </td>
+                        <td class="p-4 text-gray-900 dark:text-white font-medium">$${parseFloat(prod.precio).toFixed(2)}</td>
+                        <td class="p-4 text-gray-400 dark:text-gray-500 font-medium text-xs">$${parseFloat(prod.precioCosto || 0).toFixed(2)}</td>
+                        <td class="p-4">
+                            <div class="flex flex-col gap-1 w-24">
+                                <span class="${claseTextoStock}">${stockNum} u. ${iconoAlerta}</span>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700/50 h-1.5 rounded-full overflow-hidden">
+                                    <div class="${claseBarraStock} h-full" style="width: ${Math.min((stockNum / (minNum * 2 || 10)) * 100, 100)}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="p-4 text-right">
+                            <div class="flex justify-end gap-2">
+                                <button type="button" class="btn-editar p-1.5 rounded-md text-gray-500 hover:text-blue-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-700 transition-colors" data-id="${prod.id}" title="Editar">✏️</button>
+                                <button type="button" class="btn-eliminar p-1.5 rounded-md text-gray-500 hover:text-red-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-gray-700 transition-colors" data-id="${prod.id}" title="Eliminar">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Actualizar valores numéricos en los KPIs
+        document.getElementById('kpi-valor-total').textContent = `$${valorTotalAlCosto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('kpi-productos-totales').textContent = listaProductos.length;
+        document.getElementById('kpi-stock-bajo').textContent = conteoBajoStock;
+        document.getElementById('kpi-agotados').textContent = conteoAgotados;
+
+        document.querySelector('#contador-mostrados').textContent = productosFiltrados.length;
+        document.querySelector('#contador-total').textContent = listaProductos.length;
+
+        asignarEventosAcciones();
+    }
+
+    function asignarEventosAcciones() {
+        document.querySelectorAll('.btn-eliminar').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = e.currentTarget.getAttribute('data-id');
+                listaProductos = listaProductos.filter(p => p.id !== id);
+                renderizarInventario();
+            };
+        });
+
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.onclick = (e) => {
+                const id = e.currentTarget.getAttribute('data-id');
+                const prod = listaProductos.find(p => p.id === id);
+                if (!prod) return;
+
+                modalTitulo.textContent = "Editar Producto";
+                fId.value = prod.id;
+                fNombre.value = prod.nombre;
+                fCategoriaSelect.value = prod.categoria;
+                fPrecio.value = prod.precio;
+                fPrecioCosto.value = prod.precioCosto || "0.00";
+                fStock.value = prod.stock;
+                fStockMinimo.value = prod.stockMinimo || "0";
+
+                fContenedorNuevaCat.classList.add('hidden');
+                fNuevaCategoriaInput.removeAttribute('required');
+
+                toggleModal(true);
+            };
+        });
+    }
+
+    function inicializar() {
+        // Eventos de búsqueda y categoría
+        buscarInput.addEventListener('input', renderizarInventario);
+        categoriaSelect.addEventListener('change', renderizarInventario);
+
+        // Eventos de KPIs (Filtros)
+        document.getElementById('card-totales').addEventListener('click', () => { kpiFiltroActivo = 'todos'; renderizarInventario(); });
+        document.getElementById('card-restock').addEventListener('click', () => { kpiFiltroActivo = 'restock'; renderizarInventario(); });
+        document.getElementById('card-agotados').addEventListener('click', () => { kpiFiltroActivo = 'agotados'; renderizarInventario(); });
+
+        // Eventos del modal
+        document.querySelector('#btn-anadir').onclick = () => {
+            modalTitulo.textContent = "Añadir Producto";
+            fId.value = "";
+            toggleModal(true);
+        };
+
+        modalCerrarBtn.onclick = () => toggleModal(false);
+        modalCancelarBtn.onclick = () => toggleModal(false);
+
+        fCategoriaSelect.onchange = () => {
+            if (fCategoriaSelect.value === '__NUEVA__') {
+                fContenedorNuevaCat.classList.remove('hidden');
+                fNuevaCategoriaInput.setAttribute('required', 'true');
+                fNuevaCategoriaInput.focus();
+            } else {
+                fContenedorNuevaCat.classList.add('hidden');
+                fNuevaCategoriaInput.removeAttribute('required');
+            }
+        };
+
+        formProducto.onsubmit = (e) => {
+            e.preventDefault();
+
+            let categoriaFinal = fCategoriaSelect.value;
+            if (categoriaFinal === '__NUEVA__') {
+                categoriaFinal = fNuevaCategoriaInput.value.trim();
+            }
+
+            if (!categoriaFinal) return;
+
+            const idActual = fId.value;
+
+            if (idActual) {
+                const prod = listaProductos.find(p => p.id === idActual);
+                if (prod) {
+                    prod.nombre = fNombre.value.trim();
+                    prod.categoria = categoriaFinal;
+                    prod.precio = parseFloat(fPrecio.value).toFixed(2);
+                    prod.precioCosto = parseFloat(fPrecioCosto.value).toFixed(2);
+                    prod.stock = parseInt(fStock.value, 10);
+                    prod.stockMinimo = parseInt(fStockMinimo.value, 10);
+                }
+            } else {
+                const ultimoIdNum = listaProductos.reduce((max, p) => {
+                    const num = parseInt(p.id.replace('PRD-', ''), 10);
+                    return num > max ? num : max;
+                }, 0);
+                const nuevoId = `PRD-${String(ultimoIdNum + 1).padStart(3, '0')}`;
+
+                listaProductos.push({
+                    id: nuevoId,
+                    nombre: fNombre.value.trim(),
+                    categoria: categoriaFinal,
+                    precio: parseFloat(fPrecio.value).toFixed(2),
+                    precioCosto: parseFloat(fPrecioCosto.value).toFixed(2),
+                    stock: parseInt(fStock.value, 10),
+                    stockMinimo: parseInt(fStockMinimo.value, 10)
+                });
+            }
+
+            toggleModal(false);
+            renderizarInventario();
+        };
+
+        renderizarInventario();
+    }
+
+    function marcarRutaActiva() {
+        const rutaActual = window.location.pathname;
+        const enlacesMenu = document.querySelectorAll('#sidebar-menu a');
+        enlacesMenu.forEach((enlace) => {
+            if (enlace.getAttribute('data-link') === rutaActual) {
+                enlace.classList.remove('rounded-lg', 'text-slate-400', 'hover:bg-slate-800');
+                enlace.classList.add('border-l-4', 'border-blue-500', 'bg-slate-800', 'text-white');
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => { inicializar(); marcarRutaActiva(); });
+    } else {
+        inicializar();
+        marcarRutaActiva();
+    }
 </script>
