@@ -35,23 +35,8 @@ const getProducts = async (userId) => {
         WHERE user_id = $1 AND deleted_at IS NULL
         ORDER BY created_at DESC
     `, [userId]);
-    const getProducts = res.rows;
-    return getProducts;
-}
-
-/**
- * Busca un product específico por su ID
- * @param {Product['id']} id - El ID del producto
- * @param {Product['userId']} userId - El ID del usuario
- * @returns {Product} - El producto encontrado o null si no se encontró
- */
-const findProductById = async (id, userId) => {
-    const res = await db.query(`
-        SELECT * FROM products
-        WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL
-    `, [id, userId]);
-    const findProduct = res.rows[0] || null;
-    return findProduct;
+    const products = res.rows;
+    return products;
 };
 
 /**
@@ -65,18 +50,18 @@ const findProductById = async (id, userId) => {
  * @param {Product['current_stock']} payload.current_stock - El stock actual del producto
  * @param {Product['minimum_stock']} payload.minimum_stock - El stock mínimo del producto
  * @param {Product['id']} payload.id - El ID del producto
- * @returns {Pruduct} - El producto actualizado
+ * @returns {Product} - El producto actualizado
 */
-const updateProduct = async ({ userId, name, sku, price, cost, currentStock, minimumStock, id }) => {
+const updateProduct = async ({ userId, name, sku, price, cost, current_stock, minimum_stock, id }) => {
     const res = await db.query(`
         UPDATE products
         SET name = $1, sku = $2, price = $3, cost = $4, current_stock = $5, minimum_stock = $6
         WHERE id = $7 AND user_id = $8 AND deleted_at IS NULL
         RETURNING *
-        `, [name, sku, price, cost, currentStock, minimumStock, id, userId]);
+        `, [name, sku, price, cost, current_stock , minimum_stock, id, userId]);
     const updatedProduct = res.rows[0] || null;
     return updatedProduct;
-}
+};
 
 /**
  * Elimina un producto de la base de datos
@@ -98,9 +83,8 @@ const softDeleteProduct = async ({ id, userId }) => {
 const productRepository = {
     createProduct,
     getProducts,
-    findProductById,
     updateProduct,
     softDeleteProduct,
-}
+};
 
 export default productRepository;

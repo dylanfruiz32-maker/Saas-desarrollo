@@ -50,4 +50,3 @@ export const deleteProductRouteSchema = {
   }),
   query: null,
 }
-
