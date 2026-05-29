@@ -104,10 +104,29 @@ const createProductsTable = async () => {
 };
 
 /**
+ * Crea la tabla de devoluciones de productos en la base de datos
+ * @returns {void}
+ */
+const createProductReturnsTable = async () => {
+  await db.query(`
+    CREATE TABLE product_returns (
+      id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      product_id BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      quantity INTEGER NOT NULL CHECK (quantity >= 1),
+      reason TEXT NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    )
+  `);
+  console.log('Tabla de devoluciones de productos creada!');
+};
+
+/**
  * Elimina las tablas de la base de datos para reiniciar el estado de la base de datos
  * @returns {void}
  */
 const resetDb = async () => {
+  await db.query('DROP TABLE IF EXISTS product_returns');
   await db.query('DROP TABLE IF EXISTS category_attributes');
   await db.query('DROP TABLE IF EXISTS products');
   await db.query('DROP TABLE IF EXISTS categories');
@@ -132,7 +151,7 @@ export const createTables = async () => {
   await createSessionTable();
   await createCategoryAttributesTable();
   await createProductsTable();
-
+  await createProductReturnsTable();
   console.log('Tablas creadas');
   await db.end();
   process.exit(1);
